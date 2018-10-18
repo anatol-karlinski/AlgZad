@@ -10,7 +10,7 @@ namespace AlgZad
     internal class Calculations
     {
         public static int N = 50;
-        public static int argumentCount = 100000;
+        public static int argumentCount = 1000000;
         public static int threadsCount = 10;
 
         public static int argumentsPerThread = (int)Math.Ceiling(Convert.ToDouble(argumentCount / threadsCount));
@@ -198,11 +198,10 @@ namespace AlgZad
             for (int i = 0; i < Calculations.threadsCount; i++)
             {
                 var isLast = i == Calculations.threadsCount-1;
-                threads.Add(new Task(() =>
+                threads.Add(Task.Factory.StartNew(() =>
                 {
                     calculations.RunCalculations(results, randomSeed, isLast);
-                }));
-                threads[i].Start();
+                }, TaskCreationOptions.LongRunning));
             }
             Task.WaitAll(threads.ToArray());
 
